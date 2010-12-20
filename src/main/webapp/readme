@@ -1,0 +1,92 @@
+Webstart_Launcher Readme
+	
+	---------------------------------------------------------------------------------------------------------------------------
+	
+    * Description : construct a Java WebStart file from a {*.jnlp} file template
+
+    * Syntax :	[scheme]://[ServerPath] [:port] [/ContextPath] [/ServletPath]  [?query]
+	
+		[scheme] = http 
+		
+		[ServerPath] [:port] [/ContextPath] = WebContext Root where Servlet is deployed
+		
+		[/ServletPath] = 	launcherTemplate filePath inside Servlet Context (suffix must be .jnlp)
+							If file name is not explicitly defined, this path must end with "/" and 
+							"launcher.jnlp" will be used as default name  
+		
+		[?query] = query parameters (optional and overrides default parameters)
+			
+				[?src=urlPath] = 	New launcherTemplate urlPath, if "urlPath" starts with "/", relative path 
+									from within the same server is used with this new contextPath
+									This path must end with "/" if default file name "launcher.jnlp" has to be used
+								
+				[?cdb=codeBasePath] = New codeBasePath, if urlPath starts with "/", relative path 
+									from within the same server is used with this new contextPath
+									If not defined codeBasePath = launcherTemplate urlPath
+									This path can finish with or without "/"
+						
+						Note : CodeBase is injected in the new build JNLP, this is where all the resources will be launched from
+				
+				[?arg=value] = 	Argument "value" is added to the jnlp TAG <application-desc><argument> (can be multiple) 
+								Each value will be passed to "main" application launched function as argument 
+				
+				[?pro=name+value] = Property "name" and "value" are added to the jnlp TAG <resources><property> (can be multiple)
+									Each property is added to System.Property variable that can be read from the application launched
+									If "value" starts with "${cdb}", the codeBasePath is explicitly injected instead of key word   
+				
+		Note :	Each query parameter must be separated with "&"	as defined by standard URL specifications   
+				
+				When a file is not located on a web server, for example on a file system is the local network, the correct URL syntax is :
+				file:/// [//hostname] [/directory shared name] [/filename]   
+				(file must previously be shared on host machine with enough right access)
+															 
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/
+
+  	Servlet will build JNLP from "ServerURL/ContextPath/launcher.jnlp"
+	Codebase injected will be "ServerURL/ContextPath"
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/application1/
+
+  	Servlet will build JNLP from "ServerURL/ContextPath/application1/launcher.jnlp"
+	Codebase injected will be "ServerURL/ContextPath/application1"
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/application2/test.jnlp
+
+  	Servlet will build JNLP from "ServerURL/ContextPath/application2/test.jnlp"
+	Codebase injected will be "ServerURL/ContextPath/application2"
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/?src=/newWebContext/application1&arg=1erArgument
+
+  	Servlet will build JNLP from "ServerURL/newWebContext/application1/launcher.jnlp"
+	Codebase injected will be "ServerURL/newWebContext/application1"
+	Argument added value is "1erArgument"
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/?src=http://znwilde.hcuge.ch:30541/photobox/test.jnlp
+
+  	Servlet will build JNLP from "http://znwilde.hcuge.ch:30541/photobox/test.jnlp"
+	Codebase injected will be "http://znwilde.hcuge.ch:30541/photobox"
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/?src=file://///cih-1012/webroot/&cdb=/applicationCode
+
+  	Servlet will build JNLP from "file://///cih-1012/webroot/launcher.jnlp"
+	Codebase injected will be "file://///cih-1012/webroot/applicationCode"
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/?cdb=/newWebContext/application1&pro=testConfig+file://///cih-1012/webroot/config.properties
+
+  	Servlet will build JNLP from "ServerURL/ContextPath/launcher.jnlp"
+	Codebase injected will be "ServerURL/newWebContext/application1"
+	Property added is name=testConfig value=file://///cih-1012/webroot/config.properties 
+
+	---------------------------------------------------------------------------------------------------------------------------
+	EX : http://localhost:8080/webstart_launcher/newConfigLauncher.jnlp?cdb=/newWebContext/application2&pro=testConfig+${cdb}/conf/config.properties
+
+  	Servlet will build JNLP from "ServerURL/ContextPath/newConfigLauncher.jnlp"
+	Codebase injected will be "ServerURL/newWebContext/application2"
+	Property added is name=testConfig value=ServerURL/newWebContext/application2/conf/config.properties
