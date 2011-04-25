@@ -41,52 +41,52 @@ Webstart_Launcher Readme
 				(file must previously be shared on host machine with enough right access)
 															 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/
+	EX : http://localhost:8080/jnlp-builder/
 
   	Servlet will build JNLP from "ServerURL/ContextPath/launcher.jnlp"
 	Codebase injected will be "ServerURL/ContextPath"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/application1/
+	EX : http://localhost:8080/jnlp-builder/application1/
 
   	Servlet will build JNLP from "ServerURL/ContextPath/application1/launcher.jnlp"
 	Codebase injected will be "ServerURL/ContextPath/application1"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/application2/test.jnlp
+	EX : http://localhost:8080/jnlp-builder/application2/test.jnlp
 
   	Servlet will build JNLP from "ServerURL/ContextPath/application2/test.jnlp"
 	Codebase injected will be "ServerURL/ContextPath/application2"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/?src=/newWebContext/application1&arg=1erArgument
+	EX : http://localhost:8080/jnlp-builder/?src=/newWebContext/application1&arg=1erArgument
 
   	Servlet will build JNLP from "ServerURL/newWebContext/application1/launcher.jnlp"
 	Codebase injected will be "ServerURL/newWebContext/application1"
 	Argument added value is "1erArgument"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/?src=http://znwilde.hcuge.ch:30541/photobox/test.jnlp
+	EX : http://localhost:8080/jnlp-builder/?src=http://localhost:30541/photobox/test.jnlp
 
-  	Servlet will build JNLP from "http://znwilde.hcuge.ch:30541/photobox/test.jnlp"
-	Codebase injected will be "http://znwilde.hcuge.ch:30541/photobox"
+  	Servlet will build JNLP from "http://localhost:30541/photobox/test.jnlp"
+	Codebase injected will be "http://localhost:30541/photobox"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/?src=file://///cih-1012/webroot/&cdb=/applicationCode
+	EX : http://localhost:8080/jnlp-builder/?src=file://///cih-1012/webroot/&cdb=/applicationCode
 
   	Servlet will build JNLP from "file://///cih-1012/webroot/launcher.jnlp"
 	Codebase injected will be "file://///cih-1012/webroot/applicationCode"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/?cdb=/newWebContext/application1&pro=testConfig+file://///cih-1012/webroot/config.properties
+	EX : http://localhost:8080/jnlp-builder/?cdb=/newWebContext/application1&pro=testConfig+file://///cih-1012/webroot/config.properties
 
   	Servlet will build JNLP from "ServerURL/ContextPath/launcher.jnlp"
 	Codebase injected will be "ServerURL/newWebContext/application1"
 	Property added is name=testConfig value=file://///cih-1012/webroot/config.properties 
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/webstart_launcher/newConfigLauncher.jnlp?cdb=/newWebContext/application2&pro=testConfig+${cdb}/conf/config.properties
+	EX : http://localhost:8080/jnlp-builder/newConfigLauncher.jnlp?cdb=http://localhost:8080/weasis&pro=testConfig+${cdb}/conf/config.properties
 
   	Servlet will build JNLP from "ServerURL/ContextPath/newConfigLauncher.jnlp"
-	Codebase injected will be "ServerURL/newWebContext/application2"
-	Property added is name=testConfig value=ServerURL/newWebContext/application2/conf/config.properties
+	Codebase injected will be "http://localhost:8080/weasis"
+	Property added is name=testConfig value=http://localhost:8080/weasis/conf/config.properties
