@@ -38,7 +38,10 @@
 		<!-- Optional library (Substance Look and feel, only since version 1.0.8). Requires the new Java Plug-in introduced 
 		in the Java SE 6 update 10 release.For previous JRE 6, substance.jnlp needs a static codebase URL -->
 		<extension href="substance.jnlp"/>
-
+		
+ 		<!-- Allows to get files in pack200 compression, only available from Weasis 1.1.2 -->
+      	<property name="jnlp.packEnabled" value="true" />
+      	
 		<!--
 			Required parameter. Define the location of config.properties (the
 			OSGI configuration and the list of plug-ins to install/start)

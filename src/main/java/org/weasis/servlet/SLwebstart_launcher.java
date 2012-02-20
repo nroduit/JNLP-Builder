@@ -117,8 +117,9 @@ public class SLwebstart_launcher extends HttpServlet {
 
         try {
             logRequestInfo(request);
-            if (handleRequestAndRedirect(request, response))
+            if (handleRequestAndRedirect(request, response)) {
                 return;
+            }
 
             JnlpTemplate launcher = locateLauncherTemplate(request);
             readLauncherTemplate(launcher);
@@ -168,8 +169,9 @@ public class SLwebstart_launcher extends HttpServlet {
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         try {
-            if (handleRequestAndRedirect(request, response))
+            if (handleRequestAndRedirect(request, response)) {
                 return;
+            }
 
             response.setContentType(JNLP_MIME_TYPE);
 
@@ -303,10 +305,12 @@ public class SLwebstart_launcher extends HttpServlet {
             URLConnection launcherTemplateConnection = templateURL.openConnection();
 
             if (launcherTemplateConnection instanceof HttpURLConnection) {
-                if (((HttpURLConnection) launcherTemplateConnection).getResponseCode() != HttpURLConnection.HTTP_OK)
+                if (((HttpURLConnection) launcherTemplateConnection).getResponseCode() != HttpURLConnection.HTTP_OK) {
                     throw new Exception("HttpURLConnection not accessible : " + templateURL);
-            } else if (launcherTemplateConnection.getContentLength() <= 0)
+                }
+            } else if (launcherTemplateConnection.getContentLength() <= 0) {
                 throw new Exception("URLConnection  not accessible : " + templatePath + "/" + templateFileName);
+            }
 
             // GET SOURCECODE CODEBASE PATH
 
@@ -464,8 +468,9 @@ public class SLwebstart_launcher extends HttpServlet {
             reader = null;
         }
 
-        if (!rootElt.getName().equals(JNLP_TAG_ELT_ROOT))
+        if (!rootElt.getName().equals(JNLP_TAG_ELT_ROOT)) {
             throw new ServletErrorException(HttpServletResponse.SC_NOT_ACCEPTABLE, "Invalid JNLP launcher template");
+        }
 
         launcher.rootElt = rootElt;
     }
@@ -520,8 +525,9 @@ public class SLwebstart_launcher extends HttpServlet {
         if (launcher != null && launcher.rootElt != null && strValues != null) {
             try {
                 Element applicationDescElt = launcher.rootElt.getChild(JNLP_TAG_ELT_APPLICATION_DESC);
-                if (applicationDescElt == null)
+                if (applicationDescElt == null) {
                     throw new Exception("JNLP TAG : <" + JNLP_TAG_ELT_APPLICATION_DESC + "> is not found");
+                }
 
                 for (int i = 0; i < strValues.length; i++) {
                     applicationDescElt.addContent(new Element(JNLP_TAG_ATT_ARGUMENT).addContent(strValues[i]));
@@ -547,8 +553,9 @@ public class SLwebstart_launcher extends HttpServlet {
             try {
                 Element resourcesElt = launcher.rootElt.getChild(JNLP_TAG_ELT_RESOURCES);
 
-                if (resourcesElt == null)
+                if (resourcesElt == null) {
                     throw new Exception("JNLP TAG : <" + JNLP_TAG_ELT_RESOURCES + "> is not found");
+                }
 
                 for (int i = 0; i < strValues.length; i++) {
                     // split any whitespace character: [ \t\n\x0B\f\r ]
@@ -566,8 +573,9 @@ public class SLwebstart_launcher extends HttpServlet {
                         propertyElt.setAttribute(JNLP_TAG_ATT_VALUE, propertyValue);
 
                         resourcesElt.addContent(propertyElt);
-                    } else
+                    } else {
                         throw new Exception("Query Parameter {property} is invalid : " + strValues.toString());
+                    }
                 }
             } catch (Exception e) {
                 throw new ServletErrorException(HttpServletResponse.SC_NOT_ACCEPTABLE,
@@ -586,8 +594,9 @@ public class SLwebstart_launcher extends HttpServlet {
         if (launcher != null && launcher.rootElt != null) {
             try {
                 Element resourcesElt = launcher.rootElt.getChild(JNLP_TAG_ELT_RESOURCES);
-                if (resourcesElt == null)
+                if (resourcesElt == null) {
                     throw new Exception("JNLP TAG : <" + JNLP_TAG_ELT_RESOURCES + "> is not found");
+                }
 
                 for (Element elt : (List<Element>) resourcesElt.getChildren(JNLP_TAG_ELT_PROPERTY)) {
                     String propertyValue = elt.getAttributeValue(JNLP_TAG_ATT_VALUE);
