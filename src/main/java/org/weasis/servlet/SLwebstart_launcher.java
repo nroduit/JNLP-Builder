@@ -126,7 +126,7 @@ public class SLwebstart_launcher extends HttpServlet {
             parseLauncherTemplate(launcher);
             String launcherStr = buildJnlpResponse(launcher, request);
 
-            logger.debug("doGet(HttpServletRequest, HttpServletResponse) - launcherStr = [\n{}\n]", launcherStr);
+            logger.debug("doGet() - launcherStr = [\n{}\n]", launcherStr);
 
             response.setContentType(JNLP_MIME_TYPE);
             response.setContentLength(launcherStr.length());
@@ -136,10 +136,10 @@ public class SLwebstart_launcher extends HttpServlet {
             outWriter.close();
 
         } catch (ServletErrorException e) {
-            logger.error("doGet(HttpServletRequest, HttpServletResponse)", e);
+            logger.error("doGet()", e);
             response.sendError(e.responseErrorCode);
         } catch (Exception e) {
-            logger.error("doGet(HttpServletRequest, HttpServletResponse)", e);
+            logger.error("doGet()", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -181,7 +181,7 @@ public class SLwebstart_launcher extends HttpServlet {
             // NOTE : getContentLength is not real content length till it's modified in doGet
 
         } catch (Exception e) {
-            logger.error("doHead(HttpServletRequest, HttpServletResponse)", e);
+            logger.error("doHead()", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
@@ -202,11 +202,11 @@ public class SLwebstart_launcher extends HttpServlet {
      * @param request
      */
     protected void logRequestInfo(HttpServletRequest request) {
-        logger.debug("logRequestInfo(HttpServletRequest) - getRequestQueryURL : {}{}", request.getRequestURL()
-            .toString(), request.getQueryString() != null ? ("?" + request.getQueryString().trim()) : "");
-        logger.debug("logRequestInfo(HttpServletRequest) - getContextPath : {}", request.getContextPath());
-        logger.debug("logRequestInfo(HttpServletRequest) - getRequestURI : {}", request.getRequestURI());
-        logger.debug("logRequestInfo(HttpServletRequest) - getServletPath : {}", request.getServletPath());
+        logger.debug("logRequestInfo() - getRequestQueryURL : {}{}", request.getRequestURL().toString(),
+            request.getQueryString() != null ? ("?" + request.getQueryString().trim()) : "");
+        logger.debug("logRequestInfo() - getContextPath : {}", request.getContextPath());
+        logger.debug("logRequestInfo() - getRequestURI : {}", request.getRequestURI());
+        logger.debug("logRequestInfo() - getServletPath : {}", request.getServletPath());
     }
 
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,10 +231,8 @@ public class SLwebstart_launcher extends HttpServlet {
         // Ex of mapping the root of Servlet context : <servlet-mapping><url-pattern>/</url-pattern></servlet-mapping>
 
         if (!request.getServletPath().endsWith("/") && !request.getServletPath().endsWith(JNLP_EXTENSION)) {
-            logger
-                .debug(
-                    "handleRequestAndRedirect(HttpServletRequest, HttpServletResponse) - forward request to default dispatcher : {}",
-                    request.getServletPath());
+            logger.debug("handleRequestAndRedirect() - forward request to default dispatcher : {}",
+                request.getServletPath());
             defaultRequestDispatcher.forward(request, response);
             return true;
         }
@@ -296,9 +294,9 @@ public class SLwebstart_launcher extends HttpServlet {
                 templateURL = new URL(templatePath + "/" + templateFileName);
             }
 
-            logger.debug("locateLauncherTemplate(HttpServletRequest) - String templatePath = {}", templatePath);
-            logger.debug("locateLauncherTemplate(HttpServletRequest) - String templateFileName = {}", templateFileName);
-            logger.debug("locateLauncherTemplate(HttpServletRequest) - URL templateURL = {}", templateURL);
+            logger.debug("locateLauncherTemplate() - String templatePath = {}", templatePath);
+            logger.debug("locateLauncherTemplate() - String templateFileName = {}", templateFileName);
+            logger.debug("locateLauncherTemplate() - URL templateURL = {}", templateURL);
 
             // CHECK IF LAUNCHER TEMPLATE RESOURCE EXIST
 
@@ -428,8 +426,7 @@ public class SLwebstart_launcher extends HttpServlet {
                 // reader = null;
                 // }
 
-                logger.debug("readLauncherTemplate(JnlpTemplate) - String launcherTemplateStr = {}",
-                    launcherTemplateStr);
+                logger.debug("readLauncherTemplate() - String launcherTemplateStr = {}", launcherTemplateStr);
 
             } catch (Exception e) {
                 throw new ServletErrorException(HttpServletResponse.SC_NOT_ACCEPTABLE, "Can't read launcher template",
@@ -600,9 +597,21 @@ public class SLwebstart_launcher extends HttpServlet {
 
                 for (Element elt : (List<Element>) resourcesElt.getChildren(JNLP_TAG_ELT_PROPERTY)) {
                     String propertyValue = elt.getAttributeValue(JNLP_TAG_ATT_VALUE);
-                    if (propertyValue != null && propertyValue.startsWith("${cdb}")) {
+                    if (propertyValue != null) {
                         propertyValue = propertyValue.replace("${cdb}", launcher.codeBasePath);
                         elt.setAttribute(JNLP_TAG_ATT_VALUE, propertyValue);
+                    }
+                }
+
+                Element applicationDescElt = launcher.rootElt.getChild(JNLP_TAG_ELT_APPLICATION_DESC);
+                if (applicationDescElt == null) {
+                    throw new Exception("JNLP TAG : <" + JNLP_TAG_ELT_APPLICATION_DESC + "> is not found");
+                }
+                for (Element elt : (List<Element>) applicationDescElt.getChildren(JNLP_TAG_ATT_ARGUMENT)) {
+                    String propertyValue = elt.getValue();
+                    if (propertyValue != null) {
+                        propertyValue = propertyValue.replace("${cdb}", launcher.codeBasePath);
+                        elt.setText(propertyValue);
                     }
                 }
             } catch (Exception e) {
