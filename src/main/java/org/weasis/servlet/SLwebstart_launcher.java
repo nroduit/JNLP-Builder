@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Benoit Jacquemoud - initial API and implementation
+ *     Nicolas Roduit
  ******************************************************************************/
 
 package org.weasis.servlet;

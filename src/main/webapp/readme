@@ -3,8 +3,8 @@ Webstart_Launcher Readme
 	---------------------------------------------------------------------------------------------------------------------------
 	
     * Description : construct a Java WebStart file from a {*.jnlp} file template (launcher.jnlp) to launch directly Weasis. For bypassing 
-    				the new restriction about signing a JWS application (see http://java.dzone.com/articles/webstart-changes-6u17-until) and 
-    				still building jnlp dynamically, It is necessary to use launcher-sec.jnlp where the Java properties become jnlp arguments.
+    the new restriction about signing a JWS application (see http://java.dzone.com/articles/webstart-changes-6u17-until) and 
+    still building jnlp dynamically, It is necessary to use launcher-sec.jnlp (works only from Weasis 1.1.2) where the Java properties become jnlp arguments.
 
     * Syntax :	[scheme]://[ServerPath] [:port] [/ContextPath] [/ServletPath]  [?query]
 	
@@ -40,54 +40,62 @@ Webstart_Launcher Readme
 				
 				When a file is not located on a web server, for example on a file system is the local network, the correct URL syntax is :
 				file:/// [//hostname] [/directory shared name] [/filename]   
-				(file must previously be shared on host machine with enough right access)
+				(note: on unix system, 1 slash after file is enough - file:/)
 															 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/
+	EX: http://localhost:8080/jnlp-builder/
 
   	Servlet will build JNLP from "ServerURL/ContextPath/launcher.jnlp"
 	Codebase injected will be "ServerURL/ContextPath"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/application1/
+	EX: http://localhost:8080/jnlp-builder/application1/
 
   	Servlet will build JNLP from "ServerURL/ContextPath/application1/launcher.jnlp"
 	Codebase injected will be "ServerURL/ContextPath/application1"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/application2/test.jnlp
+	EX: http://localhost:8080/jnlp-builder/application2/test.jnlp
 
   	Servlet will build JNLP from "ServerURL/ContextPath/application2/test.jnlp"
 	Codebase injected will be "ServerURL/ContextPath/application2"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/?src=/newWebContext/application1&arg=1erArgument
+	EX: http://localhost:8080/jnlp-builder/?src=/newWebContext/application1&arg=1erArgument
 
   	Servlet will build JNLP from "ServerURL/newWebContext/application1/launcher.jnlp"
 	Codebase injected will be "ServerURL/newWebContext/application1"
 	Argument added value is "1erArgument"
-
+	
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/?src=http://localhost:30541/photobox/test.jnlp
+	EX: http://localhost:8080/jnlp-builder/launcher-sec.jnlp?cdb=/weasis&arg=$dicom:get+-w+"/home/Programming/wado.xml"
+
+  	Servlet will build JNLP from "ServerURL/ContextPath/launcher-sec.jnlp"
+	Codebase injected will be "ServerURL/ContextPath"
+	Argument added value is "$dicom:get+-w+"/home/Programming/wado.xml""
+	Note: for white space in URLs it is recommended to use '+' instead "%20" in the query string after an '?'
+	
+	---------------------------------------------------------------------------------------------------------------------------
+	EX: http://localhost:8080/jnlp-builder/?src=http://localhost:30541/photobox/test.jnlp
 
   	Servlet will build JNLP from "http://localhost:30541/photobox/test.jnlp"
 	Codebase injected will be "http://localhost:30541/photobox"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/?src=file://///cih-1012/webroot/&cdb=/applicationCode
+	EX: http://localhost:8080/jnlp-builder/?src=file://///ih-1012/webroot/&cdb=/applicationCode
 
-  	Servlet will build JNLP from "file://///cih-1012/webroot/launcher.jnlp"
-	Codebase injected will be "file://///cih-1012/webroot/applicationCode"
+  	Servlet will build JNLP from "file://///ih-1012/webroot/launcher.jnlp"
+	Codebase injected will be "file://///ih-1012/webroot/applicationCode"
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/?cdb=/newWebContext/application1&pro=testConfig+file://///cih-1012/webroot/config.properties
+	EX: http://localhost:8080/jnlp-builder/?cdb=/newWebContext/application1&pro=testConfig+file:///D:/config/config.properties
 
   	Servlet will build JNLP from "ServerURL/ContextPath/launcher.jnlp"
 	Codebase injected will be "ServerURL/newWebContext/application1"
-	Property added is name=testConfig value=file://///cih-1012/webroot/config.properties 
+	Property added is name=testConfig value=file:///D:/config/config.properties 
 
 	---------------------------------------------------------------------------------------------------------------------------
-	EX : http://localhost:8080/jnlp-builder/newConfigLauncher.jnlp?cdb=http://localhost:8080/weasis&pro=testConfig+${cdb}/conf/config.properties
+	EX: http://localhost:8080/jnlp-builder/newConfigLauncher.jnlp?cdb=http://localhost:8080/weasis&pro=testConfig+${cdb}/conf/config.properties
 
   	Servlet will build JNLP from "ServerURL/ContextPath/newConfigLauncher.jnlp"
 	Codebase injected will be "http://localhost:8080/weasis"
