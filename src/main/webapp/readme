@@ -2,7 +2,9 @@ Webstart_Launcher Readme
 	
 	---------------------------------------------------------------------------------------------------------------------------
 	
-    * Description : construct a Java WebStart file from a {*.jnlp} file template
+    * Description : construct a Java WebStart file from a {*.jnlp} file template (launcher.jnlp) to launch directly Weasis. For bypassing 
+    				the new restriction about signing a JWS application (see http://java.dzone.com/articles/webstart-changes-6u17-until) and 
+    				still building jnlp dynamically, It is necessary to use launcher-sec.jnlp where the Java properties become jnlp arguments.
 
     * Syntax :	[scheme]://[ServerPath] [:port] [/ContextPath] [/ServletPath]  [?query]
 	
