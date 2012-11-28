@@ -63,7 +63,7 @@ public class SLwebstart_launcher extends HttpServlet {
     protected static String JNLP_TAG_ATT_CODEBASE = "codebase";
     protected static String JNLP_TAG_ATT_HREF = "href";
 
-    static final String DEFAULT_JNLP_TEMPLATE_NAME = "launcher.jnlp";
+    static final String DEFAULT_JNLP_TEMPLATE_NAME = "launcher-sec.jnlp";
     static final String JNLP_EXTENSION = ".jnlp";
     static final String JNLP_MIME_TYPE = "application/x-java-jnlp-file";
 
@@ -123,7 +123,7 @@ public class SLwebstart_launcher extends HttpServlet {
             }
 
             JnlpTemplate launcher = locateLauncherTemplate(request);
-            readLauncherTemplate(launcher);
+            // readLauncherTemplate(launcher);
             parseLauncherTemplate(launcher);
             String launcherStr = buildJnlpResponse(launcher, request);
 
@@ -288,9 +288,8 @@ public class SLwebstart_launcher extends HttpServlet {
                 // called again in loop trying reading the file
 
                 String URItemplatePath = templatePath.replaceFirst(serverPath + request.getContextPath(), "");
-                String realPath = getServletContext().getRealPath(URItemplatePath + templateFileName);
-                templateURL = new File(realPath).toURL();
-
+                String realPath = getServletContext().getRealPath(URItemplatePath);
+                templateURL = new File(realPath, templateFileName).toURL();
             } else {
                 templateURL = new URL(templatePath + "/" + templateFileName);
             }
@@ -383,7 +382,6 @@ public class SLwebstart_launcher extends HttpServlet {
 
         if (logger.isDebugEnabled()) {
             try {
-                String launcherTemplateStr = "";
 
                 ByteArrayOutputStream bufferOS = null;
                 BufferedInputStream bufferIS = null;
@@ -394,10 +392,9 @@ public class SLwebstart_launcher extends HttpServlet {
                     while ((charRead = bufferIS.read()) != -1) {
                         bufferOS.write((byte) charRead);
                     }
-
-                    // launcherTemplateStr = bufferOS.toString();
-                    // NOTE : this way of reading doesn't take car of any specified charset encoding
-                    launcherTemplateStr = bufferOS.toString("UTF-8");
+                    // NOTE : Assume the template has UTF-8 encoding
+                    String launcherTemplateStr = bufferOS.toString("UTF-8");
+                    logger.debug("readLauncherTemplate() - String launcherTemplateStr = {}", launcherTemplateStr);
                 } finally {
                     if (bufferOS != null) {
                         bufferOS.close();
@@ -408,27 +405,6 @@ public class SLwebstart_launcher extends HttpServlet {
                     }
                     bufferIS = null;
                 }
-
-                // OTHER MEANS OF READING
-                // BufferedReader reader = null;
-                // try {
-                // StringBuilder sb = new StringBuilder();
-                // reader = new BufferedReader(new InputStreamReader(launcher.realPathURL.openConnection()
-                // .getInputStream(), "UTF-8"));
-                //
-                // String line;
-                // while ((line = reader.readLine()) != null)
-                // sb.append(line).append("\r\n");
-                //
-                // launcherTemplateStr = sb.toString();
-                // } finally {
-                // if (reader != null)
-                // reader.close();
-                // reader = null;
-                // }
-
-                logger.debug("readLauncherTemplate() - String launcherTemplateStr = {}", launcherTemplateStr);
-
             } catch (Exception e) {
                 throw new ServletErrorException(HttpServletResponse.SC_NOT_ACCEPTABLE, "Can't read launcher template",
                     e);
@@ -448,6 +424,7 @@ public class SLwebstart_launcher extends HttpServlet {
         BufferedReader reader = null;
 
         try {
+         // Assume the template has UTF-8 encoding
             reader =
                 new BufferedReader(new InputStreamReader(launcher.realPathURL.openConnection().getInputStream(),
                     "UTF-8"));
