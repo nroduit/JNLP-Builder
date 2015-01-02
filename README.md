@@ -1,3 +1,5 @@
+**THIS PROJECT IS OBSOLETE!** Use [weasis-pacs-connector 5](https://github.com/nroduit/weasis-pacs-connector) instead.
+
 ## Building JNLP-Builder
 To build jnlp-builder.war, execute the Maven command from the root directory:
 
